@@ -183,7 +183,15 @@ const ProjectsSection = () => {
                     <div className="flex flex-col sm:flex-row gap-4 pt-4">
                       <Button 
                         className={`bg-gradient-to-r ${project.color} hover:opacity-90 smooth-transition shadow-glow flex-1`}
-                        onClick={() => window.open(project.liveUrl, '_blank')}
+                        onClick={() => {
+                          const link = document.createElement('a');
+                          link.href = project.liveUrl;
+                          link.target = '_blank';
+                          link.rel = 'noopener noreferrer';
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        }}
                       >
                         <ExternalLink className="w-4 h-4 mr-2" />
                         View Live
