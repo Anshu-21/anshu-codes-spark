@@ -1,4 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { 
   Code2, 
   Database, 
@@ -9,10 +10,43 @@ import {
   Globe,
   Layers,
   FileCode,
-  Zap
+  Zap,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
+import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
+import { useCallback, useEffect, useState } from 'react';
 
 const SkillsSection = () => {
+  const [selectedCategory, setSelectedCategory] = useState(0);
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { 
+      loop: true,
+      align: 'center',
+      containScroll: 'trimSnaps'
+    },
+    [Autoplay({ delay: 4000, stopOnInteraction: false })]
+  );
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedCategory(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on('select', onSelect);
+  }, [emblaApi, onSelect]);
   const skillCategories = [
     {
       title: "Frontend Development",
@@ -84,73 +118,115 @@ const SkillsSection = () => {
   ];
 
   return (
-    <section id="skills" className="py-20 relative">
+    <section id="skills" className="py-20 relative overflow-hidden">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             My <span className="gradient-text">Skills</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            A comprehensive toolkit spanning frontend development, design, and engineering
+            Click on any category to explore my toolkit
           </p>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {skillCategories.map((category, categoryIndex) => (
-            <Card 
-              key={categoryIndex}
-              className="gradient-border bg-card/50 backdrop-blur-sm smooth-transition hover:shadow-card hover:-translate-y-2 animate-fade-in"
-              style={{animationDelay: `${categoryIndex * 0.1}s`}}
-            >
-              <CardContent className="p-6">
-                <div className="space-y-6">
-                  {/* Category Header */}
-                  <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-xl bg-gradient-to-r ${category.color} bg-opacity-10`}>
-                      <div className="text-white">
-                        {category.icon}
-                      </div>
-                    </div>
-                    <h3 className="text-lg font-semibold text-foreground">
-                      {category.title}
-                    </h3>
-                  </div>
-                  
-                  {/* Skills List */}
-                  <div className="space-y-4">
-                    {category.skills.map((skill, skillIndex) => (
-                      <div key={skillIndex} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <div className="text-primary">
-                              {skill.icon}
-                            </div>
-                            <span className="text-sm font-medium text-foreground">
-                              {skill.name}
-                            </span>
-                          </div>
-                          <span className="text-xs text-muted-foreground">
-                            {skill.level}%
-                          </span>
-                        </div>
-                        
-                        {/* Progress Bar */}
-                        <div className="w-full bg-muted rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full bg-gradient-to-r ${category.color} smooth-transition`}
-                            style={{ 
-                              width: `${skill.level}%`,
-                              animation: `scale-in 0.8s ease-out ${(categoryIndex * 0.1) + (skillIndex * 0.1)}s both`
-                            }}
-                          ></div>
+        {/* Carousel Container */}
+        <div className="relative">
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex">
+              {skillCategories.map((category, index) => (
+                <div key={index} className="flex-[0_0_100%] min-w-0 md:flex-[0_0_50%] lg:flex-[0_0_33.333%] px-4">
+                  <Card 
+                    className={`gradient-border bg-card/50 backdrop-blur-sm smooth-transition hover:shadow-glow hover:-translate-y-2 cursor-pointer h-full ${
+                      index === selectedCategory ? 'shadow-glow ring-2 ring-primary/20' : ''
+                    }`}
+                    onClick={() => setSelectedCategory(index)}
+                  >
+                    <CardContent className="p-8 text-center h-full flex flex-col justify-center">
+                      <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${category.color} p-4 shadow-lg`}>
+                        <div className="text-white w-full h-full flex items-center justify-center">
+                          {category.icon}
                         </div>
                       </div>
-                    ))}
-                  </div>
+                      <h3 className="text-xl font-bold text-foreground mb-2">
+                        {category.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm">
+                        {category.skills.length} tools & technologies
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              ))}
+            </div>
+          </div>
+          
+          {/* Navigation Buttons */}
+          <Button
+            variant="outline"
+            size="sm"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm"
+            onClick={scrollPrev}
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm"
+            onClick={scrollNext}
+          >
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Selected Category Details */}
+        <div className="mt-16">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold gradient-text mb-2">
+              {skillCategories[selectedCategory].title}
+            </h3>
+            <p className="text-muted-foreground">
+              Tools and technologies I work with
+            </p>
+          </div>
+          
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {skillCategories[selectedCategory].skills.map((skill, skillIndex) => (
+              <Card 
+                key={skillIndex}
+                className="bg-card/30 backdrop-blur-sm border-muted/50 hover:border-primary/30 smooth-transition hover:shadow-md hover:-translate-y-1"
+              >
+                <CardContent className="p-6 text-center">
+                  <div className="text-primary mb-3 flex justify-center">
+                    {skill.icon}
+                  </div>
+                  <h4 className="font-semibold text-foreground mb-2">
+                    {skill.name}
+                  </h4>
+                  
+                  {/* Skill Level */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-muted-foreground">
+                        Proficiency
+                      </span>
+                      <span className="text-xs font-medium text-primary">
+                        {skill.level}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full bg-gradient-to-r ${skillCategories[selectedCategory].color} smooth-transition`}
+                        style={{ 
+                          width: `${skill.level}%`,
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </section>
