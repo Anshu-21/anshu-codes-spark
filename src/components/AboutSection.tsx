@@ -44,7 +44,7 @@ const AboutSection = () => {
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold text-primary">My Journey</h3>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                I am Anshu Kumar, a 2nd-year Mechanical Engineering student at NIT Sikkim 
+                I am Anshu Kumar, a 3rd-year Mechanical Engineering student at NIT Sikkim 
                 with skills in HTML, CSS, Tailwind, JavaScript, React, and Appwrite. 
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">

@@ -35,7 +35,7 @@ const HeroSection = () => {
               </div>
               
               <p className="text-lg text-muted-foreground max-w-2xl animate-fade-in" style={{animationDelay: '0.6s'}}>
-                2nd-year student at NIT Sikkim passionate about frontend development, 
+                3rd-year student at NIT Sikkim passionate about frontend development, 
                 robotics, and creating innovative solutions that bridge engineering and technology.
               </p>
               
