@@ -183,14 +183,27 @@ const ProjectsSection = () => {
                     <div className="flex flex-col sm:flex-row gap-4 pt-4">
                       <Button 
                         className={`bg-gradient-to-r ${project.color} hover:opacity-90 smooth-transition shadow-glow flex-1`}
-                        onClick={() => {
-                          const link = document.createElement('a');
-                          link.href = project.liveUrl;
-                          link.target = '_blank';
-                          link.rel = 'noopener noreferrer';
-                          document.body.appendChild(link);
-                          link.click();
-                          document.body.removeChild(link);
+                        onClick={(e) => {
+                          e.preventDefault();
+                          console.log("Button clicked! URL:", project.liveUrl);
+                          
+                          // Try multiple methods to ensure it works
+                          try {
+                            // Method 1: Direct window.open
+                            const newWindow = window.open(project.liveUrl, '_blank', 'noopener,noreferrer');
+                            
+                            if (!newWindow) {
+                              console.log("Window.open blocked, trying alternative...");
+                              // Method 2: Location assignment
+                              window.location.href = project.liveUrl;
+                            } else {
+                              console.log("Successfully opened in new tab");
+                            }
+                          } catch (error) {
+                            console.error("Error opening URL:", error);
+                            // Fallback: Current window navigation
+                            window.location.href = project.liveUrl;
+                          }
                         }}
                       >
                         <ExternalLink className="w-4 h-4 mr-2" />
