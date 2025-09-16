@@ -31,7 +31,7 @@ const ProjectsSection = () => {
       ],
       status: "Completed",
       githubUrl: "#",
-      liveUrl: "#"
+      liveUrl: "https://anshu-surgeet.vercel.app"
     },
     {
       title: "Obstacle Avoidance Robot",
